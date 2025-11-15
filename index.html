@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CTVL</title>
+  <meta name="description" content="Versión Lite de CTVL - Descubre películas y series" />
+  <link rel="icon" href="https://github.com/carteltvsoporte/ctvl/raw/refs/heads/main/TV.jpeg" type="image/jpeg">
   <style>
     :root {
       --primary: #2563eb;
       --bg: #0f172a;
+      --bg-elevated: #1e293b;
       --card-bg: #1e293b;
       --text: #f8fafc;
       --text-secondary: #cbd5e1;
       --border: #334155;
       --radius: 8px;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      line-height: 1.5;
     }
-    
+
     .modal {
       position: fixed;
       top: 0;
@@ -40,28 +44,29 @@
       align-items: center;
       justify-content: center;
       z-index: 10000;
+      padding: 1rem;
     }
-    
+
     .modal-content {
       background: var(--card-bg);
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       max-width: 400px;
-      width: 90%;
+      width: 100%;
       text-align: center;
     }
-    
+
     .modal-content h2 {
       margin-bottom: 1rem;
       color: var(--primary);
     }
-    
+
     .modal-content p {
       margin-bottom: 1.5rem;
       color: var(--text-secondary);
     }
-    
+
     .modal-content button {
       width: 100%;
       padding: 0.75rem;
@@ -72,32 +77,32 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 1rem;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
-    
+
+    .hidden {
+      display: none !important;
+    }
+
     .container {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 1rem;
     }
-    
+
     .app-header {
-      background: var(--card-bg);
+      background: var(--bg-elevated);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      margin: 0 -1rem;
-      padding: 0 1rem;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
     }
-    
+
     .header-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 0;
     }
-    
+
     .logo {
       display: flex;
       align-items: center;
@@ -106,162 +111,493 @@
       font-weight: 700;
       color: var(--primary);
     }
-    
+
     .logo-img {
       width: 32px;
       height: 32px;
       border-radius: 6px;
       object-fit: cover;
     }
-    
+
     .logo-text {
       font-size: 1.2rem;
     }
-    
-    .content-sections {
-      padding: 2rem 0;
+
+    .content-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
       text-align: center;
     }
-    
-    .welcome-message {
-      text-align: center;
-      padding: 2rem;
-    }
-    
-    .welcome-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
-    }
-    
-    .welcome-message h3 {
+
+    .section-header h2 {
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
-      color: var(--text);
     }
-    
-    .welcome-message p {
+
+    .section-header p {
       color: var(--text-secondary);
+    }
+
+    .categories {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
       margin-bottom: 1.5rem;
     }
-    
+
+    .category-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    .category-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: transparent;
+    }
+
     .action-btn {
       width: 100%;
-      max-width: 300px;
-      padding: 1.25rem;
+      padding: 1rem;
       background: var(--primary);
       border: none;
       border-radius: var(--radius);
       color: white;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
+      margin-bottom: 1.5rem;
     }
-    
-    .restrictions {
-      margin-top: 2rem;
-      padding: 1.5rem;
+
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .movie-card {
       background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .movie-poster {
+      width: 100%;
+      max-width: 250px;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin: 0 auto 1rem;
+      display: block;
       border: 1px solid var(--border);
     }
-    
-    .restrictions h4 {
-      margin-bottom: 1rem;
-      color: var(--primary);
-    }
-    
-    .restrictions ul {
-      text-align: left;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    
-    .restrictions li {
+
+    .movie-title {
+      font-size: 1.25rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
-      color: var(--text-secondary);
     }
-    
-    @media (max-width: 768px) {
-      .modal-content {
-        padding: 1.5rem;
+
+    .movie-overview {
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
+
+    .usage-info {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      z-index: 10000;
+      max-width: 300px;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      float: right;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.5rem;
+      }
+      
+      .filters {
+        gap: 0.25rem;
+      }
+      
+      .filter-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+      
+      .movie-card {
+        padding: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Modal de redirección a versión Premium -->
   <div id="premium-modal" class="modal">
     <div class="modal-content">
-      <h2>Versión Lite Limitada</h2>
-      <p>Esta es una versión Lite con funcionalidades restringidas.</p>
-      <p>Para disfrutar de todas las funciones, contenido ilimitado y sin restricciones, accede a la versión Premium.</p>
-      <button id="go-premium-btn">Ir a la Versión Premium</button>
-      <button id="continue-lite-btn" style="background: var(--border);">Continuar en Lite</button>
+      <h2>Versión Limitada</h2>
+      <p>Esta es la versión Lite de CTVL con restricciones de uso.</p>
+      <p>Para una experiencia completa sin límites, accede a la versión Premium:</p>
+      <button id="premium-link">Ir a CTVP Premium</button>
+      <button id="continue-lite">Continuar en Lite</button>
     </div>
+  </div>
+
+  <div id="notification" class="notification hidden">
+    <button id="notification-close" class="notification-close">×</button>
+    <span id="notification-text"></span>
   </div>
 
   <div class="container">
     <header class="app-header">
       <div class="header-content">
         <div class="logo">
-          <img src="https://github.com/carteltvsoporte/cartel-tv-premium/raw/refs/heads/main/TV.jpeg" alt="Cartel TV" class="logo-img">
-          <span class="logo-text">CTVL Lite</span>
+          <img src="https://github.com/carteltvsoporte/ctvl/raw/refs/heads/main/TV.jpeg" alt="CTVL" class="logo-img">
+          <span class="logo-text">CTVL</span>
         </div>
       </div>
     </header>
 
-    <div class="content-sections">
-      <div class="welcome-message">
-        <div class="welcome-icon">📺</div>
-        <h3>CTVL</h3>
-        <p>Versión limitada con funcionalidades básicas</p>
-        <button class="action-btn" id="show-premium-modal">
-          <span class="btn-icon">🚀</span>
-          <span class="btn-text">Mejorar a Premium</span>
-        </button>
+    <div class="content-section">
+      <div class="section-header">
+        <h2>CATEGORIAS</h2>
+        <p>Versión Lite</p>
       </div>
-      
-      <div class="restrictions">
-        <h4>Restricciones de la versión Lite:</h4>
-        <ul>
-          <li>Contenido limitado a 10 elementos por categoría</li>
-          <li>Sin acceso a contenido en tiempo real</li>
-          <li>Sin funciones de favoritos o listas</li>
-          <li>Sin historial de visualización</li>
-          <li>Sin personalización de temas</li>
-          <li>Sin integración con TVmaze</li>
-        </ul>
+
+      <div class="categories">
+        <div class="category-section">
+          <h3 class="category-title">🎬 Películas</h3>
+          <div class="filters">
+            <button class="filter-btn active" data-type="now_playing">En Cines</button>
+            <button class="filter-btn" data-type="popular_movies">Populares</button>
+            <button class="filter-btn" data-type="top_rated_movies">Mejor Valoradas</button>
+          </div>
+        </div>
+
+        <div class="category-section">
+          <h3 class="category-title">📺 Series</h3>
+          <div class="filters">
+            <button class="filter-btn" data-type="on_the_air">En Emisión</button>
+            <button class="filter-btn" data-type="popular_tv">Populares</button>
+            <button class="filter-btn" data-type="top_rated_tv">Mejor Valoradas</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="load-btn" class="action-btn">
+        Cargar Contenido
+      </button>
+
+      <div id="movie-container" class="movie-card">
+        <div class="welcome-message">
+          <h3>Bienvenido a CTVL</h3>
+          <p>Selecciona una categoría y haz clic en "Cargar Contenido" para descubrir</p>
+          <p class="usage-info">Límite: 3 contenidos cada 15 minutos</p>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Mostrar modal al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
+    const CONFIG = {
+      TMDB_API_KEY: 'cdf9b6a0255cebc133ce4d9aaaee8d6d',
+      BASE_URL: 'https://api.themoviedb.org/3',
+      IMG_BASE_URL: 'https://image.tmdb.org/t/p/w500',
+      ACCESS_CODE: 'TV2025'
+    };
+
+    const State = {
+      currentType: 'now_playing',
+      viewCount: parseInt(localStorage.getItem('ctvl_view_count') || '0'),
+      lastViewTime: parseInt(localStorage.getItem('ctvl_last_view_time') || '0'),
+      isOnline: navigator.onLine
+    };
+
+    function setupPremiumModal() {
       const premiumModal = document.getElementById('premium-modal');
-      premiumModal.style.display = 'flex';
+      const premiumLink = document.getElementById('premium-link');
+      const continueLite = document.getElementById('continue-lite');
       
-      // Botón para ir a la versión Premium
-      document.getElementById('go-premium-btn').addEventListener('click', function() {
+      const hasSeenModal = localStorage.getItem('ctvl_seen_modal');
+      if (hasSeenModal === 'true') {
+        premiumModal.classList.add('hidden');
+        return;
+      }
+      
+      premiumLink.addEventListener('click', () => {
         window.location.href = 'https://carteltvsoporte.github.io/ctvp/';
       });
       
-      // Botón para continuar en Lite
-      document.getElementById('continue-lite-btn').addEventListener('click', function() {
-        premiumModal.style.display = 'none';
+      continueLite.addEventListener('click', () => {
+        localStorage.setItem('ctvl_seen_modal', 'true');
+        premiumModal.classList.add('hidden');
       });
+    }
+
+    function canViewContent() {
+      const now = Date.now();
+      const fifteenMinutes = 15 * 60 * 1000;
       
-      // Botón para mostrar modal nuevamente
-      document.getElementById('show-premium-modal').addEventListener('click', function() {
-        premiumModal.style.display = 'flex';
+      // Si han pasado más de 15 minutos desde la última vista, reiniciar contador
+      if (now - State.lastViewTime > fifteenMinutes) {
+        State.viewCount = 0;
+        State.lastViewTime = now;
+        localStorage.setItem('ctvl_view_count', '0');
+        localStorage.setItem('ctvl_last_view_time', now.toString());
+        return true;
+      }
+      
+      // Si no ha alcanzado el límite de 3 vistas
+      if (State.viewCount < 3) {
+        return true;
+      }
+      
+      return false;
+    }
+
+    function incrementViewCount() {
+      State.viewCount++;
+      State.lastViewTime = Date.now();
+      localStorage.setItem('ctvl_view_count', State.viewCount.toString());
+      localStorage.setItem('ctvl_last_view_time', State.lastViewTime.toString());
+    }
+
+    function showNotification(message, duration = 3000) {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      if (!notification || !notificationText) return;
+      
+      notificationText.textContent = message;
+      notification.classList.remove('hidden');
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.classList.add('hidden'), 300);
+      }, duration);
+    }
+
+    function setupNotifications() {
+      const closeBtn = document.getElementById('notification-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          const notification = document.getElementById('notification');
+          notification.classList.remove('show');
+          setTimeout(() => notification.classList.add('hidden'), 300);
+        });
+      }
+    }
+
+    async function fetchContentByType(type) {
+      let language = 'es-ES';
+      let url = '';
+
+      switch (type) {
+        case 'now_playing':
+          url = `${CONFIG.BASE_URL}/movie/now_playing?api_key=${CONFIG.TMDB_API_KEY}&language=${language}&region=ES`;
+          break;
+        case 'popular_movies':
+          url = `${CONFIG.BASE_URL}/movie/popular?api_key=${CONFIG.TMDB_API_KEY}&language=${language}`;
+          break;
+        case 'top_rated_movies':
+          url = `${CONFIG.BASE_URL}/movie/top_rated?api_key=${CONFIG.TMDB_API_KEY}&language=${language}`;
+          break;
+        case 'on_the_air':
+          url = `${CONFIG.BASE_URL}/tv/on_the_air?api_key=${CONFIG.TMDB_API_KEY}&language=${language}`;
+          break;
+        case 'popular_tv':
+          url = `${CONFIG.BASE_URL}/tv/popular?api_key=${CONFIG.TMDB_API_KEY}&language=${language}`;
+          break;
+        case 'top_rated_tv':
+          url = `${CONFIG.BASE_URL}/tv/top_rated?api_key=${CONFIG.TMDB_API_KEY}&language=${language}`;
+          break;
+        default:
+          throw new Error('Tipo no soportado');
+      }
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        return data.results || [];
+      } catch (error) {
+        console.error(`Error fetching content for ${type}:`, error);
+        throw error;
+      }
+    }
+
+    function renderContent(item) {
+      const container = document.getElementById('movie-container');
+      if (!container) return;
+      
+      const title = item.title || item.name;
+      const dateField = item.release_date || item.first_air_date;
+      const year = dateField?.substring(0, 4) || 'N/A';
+      
+      container.innerHTML = `
+        <img src="${CONFIG.IMG_BASE_URL}${item.poster_path}" 
+             alt="${title}" 
+             class="movie-poster"
+             onerror="this.src='https://via.placeholder.com/250x375/1a1a25/6c757d?text=Sin+imagen'">
+        <div class="movie-title">${title} (${year})</div>
+        <p class="movie-overview">${item.overview?.trim() || 'Sin descripción disponible.'}</p>
+        <p class="usage-info">Vistas restantes: ${3 - State.viewCount} / 3 (cada 15 minutos)</p>
+      `;
+    }
+
+    function renderError(message) {
+      const container = document.getElementById('movie-container');
+      if (!container) return;
+      
+      container.innerHTML = `
+        <div class="error-content">
+          <h3>Error al cargar contenido</h3>
+          <p>${message}</p>
+          <p class="usage-info">Vistas restantes: ${3 - State.viewCount} / 3 (cada 15 minutos)</p>
+        </div>
+      `;
+    }
+
+    function renderLimitReached() {
+      const container = document.getElementById('movie-container');
+      if (!container) return;
+      
+      const now = Date.now();
+      const fifteenMinutes = 15 * 60 * 1000;
+      const timeLeft = State.lastViewTime + fifteenMinutes - now;
+      const minutesLeft = Math.ceil(timeLeft / 60000);
+      
+      container.innerHTML = `
+        <div class="limit-reached">
+          <h3>Límite de vistas alcanzado</h3>
+          <p>Has alcanzado el límite de 3 contenidos cada 15 minutos.</p>
+          <p>Podrás ver más contenido en aproximadamente ${minutesLeft} minutos.</p>
+          <p class="usage-info">Para acceso ilimitado, utiliza la versión Premium</p>
+          <button id="go-premium" class="action-btn" style="margin-top: 1rem;">Ir a Premium</button>
+        </div>
+      `;
+      
+      document.getElementById('go-premium').addEventListener('click', () => {
+        window.location.href = 'https://carteltvsoporte.github.io/ctvp/';
       });
-    });
+    }
+
+    async function loadContent() {
+      if (!canViewContent()) {
+        renderLimitReached();
+        showNotification('Límite de vistas alcanzado. Intenta más tarde.');
+        return;
+      }
+
+      const btn = document.getElementById('load-btn');
+      const container = document.getElementById('movie-container');
+
+      if (btn) btn.disabled = true;
+      if (container) container.innerHTML = 'Cargando...';
+
+      try {
+        const items = await fetchContentByType(State.currentType);
+        if (items.length > 0) {
+          const randomIndex = Math.floor(Math.random() * items.length);
+          renderContent(items[randomIndex]);
+          incrementViewCount();
+          showNotification('Contenido cargado correctamente');
+        } else {
+          renderError('No se encontró contenido en esta categoría');
+        }
+      } catch (error) {
+        console.error('Error al cargar contenido:', error);
+        renderError(error.message || 'No se pudo cargar contenido. Verifica tu conexión.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function setupFilters() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.classList.contains('active')) return;
+          
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          State.currentType = btn.dataset.type;
+          
+          showNotification(`Categoría: ${btn.textContent.trim()}`);
+        });
+      });
+    }
+
+    function initApp() {
+      setupPremiumModal();
+      setupNotifications();
+      setupFilters();
+      
+      const loadBtn = document.getElementById('load-btn');
+      if (loadBtn) {
+        loadBtn.addEventListener('click', () => loadContent());
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
