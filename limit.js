@@ -1,0 +1,1 @@
+async function canViewContent(){const now=Date.now();const oneDay=24*60*60*1000;if(now-State.lastViewTime>oneDay){State.viewCount=0;State.lastViewTime=now;localStorage.setItem('ctvl_view_count','0');localStorage.setItem('ctvl_last_view_time',now.toString());return true;}if(State.viewCount<30){return true;}return false;}
